@@ -1,3 +1,4 @@
+
 // Page Object: halaman daftar produk
 export class InventoryPage {
   /** @param {import('@playwright/test').Page} page */
@@ -15,6 +16,12 @@ export class InventoryPage {
   async addToCart(productName) {
     const slug = productName.replace(/\s+/g, '-').toLowerCase();
     await this.page.getByTestId(`add-to-cart-${slug}`).click();
+  }
+
+  // "Sauce Labs Backpack" -> "remove-sauce-labs-backpack"
+  async removeFromCart(productName) {
+    const slug = productName.replace(/\s+/g, '-').toLowerCase();
+    await this.page.getByTestId(`remove-${slug}`).click();
   }
 
   async sortBy(value) {

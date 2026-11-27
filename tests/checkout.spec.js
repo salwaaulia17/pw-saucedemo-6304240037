@@ -1,3 +1,4 @@
+
 import { test, expect } from './fixtures.js';
 
 test.describe('Belanja & checkout', () => {
@@ -16,7 +17,9 @@ test.describe('Belanja & checkout', () => {
 
     await cartPage.checkout();
     await checkoutPage.fillInformation({
-      firstName: 'Budi', lastName: 'Santoso', postalCode: '28711',
+      firstName: 'Budi',
+      lastName: 'Santoso',
+      postalCode: '28711',
     });
     await checkoutPage.finish();
 
@@ -29,15 +32,62 @@ test.describe('Belanja & checkout', () => {
     await inventoryPage.addToCart('Sauce Labs Onesie');
     await inventoryPage.openCart();
     await cartPage.checkout();
-    await checkoutPage.fillInformation({ firstName: '', lastName: 'Santoso', postalCode: '28711' });
+
+    await checkoutPage.fillInformation({
+      firstName: '',
+      lastName: 'Santoso',
+      postalCode: '28711',
+    });
+
     await expect(checkoutPage.error).toHaveText('Error: First Name is required');
   });
 
   test('urutkan harga dari termurah', async ({ loggedIn, inventoryPage }) => {
     await inventoryPage.sortBy('lohi');
-    const teks = await inventoryPage.itemPrices.allTextContents();   // ["$7.99", ...]
+
+    const teks = await inventoryPage.itemPrices.allTextContents();
     const harga = teks.map((t) => parseFloat(t.replace('$', '')));
     const urut = [...harga].sort((a, b) => a - b);
+
+    expect(harga).toEqual(urut);
+  });
+
+  test('hapus satu produk dari keranjang', async ({ loggedIn, inventoryPage }) => {
+    await inventoryPage.addToCart('Sauce Labs Backpack');
+    await inventoryPage.addToCart('Sauce Labs Bike Light');
+
+    await inventoryPage.removeFromCart('Sauce Labs Backpack');
+
+    await expect(inventoryPage.cartBadge).toHaveText('1');
+  });
+
+  test('hapus produk terakhir dan badge keranjang tersembunyi', async ({
+    loggedIn, inventoryPage,
+  }) => {
+    await inventoryPage.addToCart('Sauce Labs Backpack');
+    await inventoryPage.removeFromCart('Sauce Labs Backpack');
+
+    await expect(inventoryPage.cartBadge).toBeHidden();
+  });
+
+  test('urutkan nama produk dari Z ke A', async ({ loggedIn, inventoryPage }) => {
+    await inventoryPage.sortBy('za');
+
+    const nama = await inventoryPage.itemNames.allTextContents();
+    const urut = [...nama].sort((a, b) => b.localeCompare(a));
+
+    expect(nama).toEqual(urut);
+  });
+
+  test('urutkan harga dari tertinggi ke terendah', async ({
+    loggedIn, inventoryPage,
+  }) => {
+    await inventoryPage.sortBy('hilo');
+
+    const teks = await inventoryPage.itemPrices.allTextContents();
+    const harga = teks.map((t) => parseFloat(t.replace('$', '')));
+    const urut = [...harga].sort((a, b) => b - a);
+
     expect(harga).toEqual(urut);
   });
 });
