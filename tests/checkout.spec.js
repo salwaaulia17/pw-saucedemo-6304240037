@@ -20,7 +20,7 @@ test.describe('Belanja & checkout', () => {
     });
     await checkoutPage.finish();
 
-    await expect(checkoutPage.completeHeader).toHaveText('Terima kasih!');  });
+    await expect(checkoutPage.completeHeader).toHaveText('Terima Kasih!');  });
 
   test('checkout gagal jika First Name kosong', async ({
     loggedIn, inventoryPage, cartPage, checkoutPage,
