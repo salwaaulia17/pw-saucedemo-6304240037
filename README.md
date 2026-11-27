@@ -22,3 +22,20 @@ Proyek ini merupakan implementasi otomasi pengujian aplikasi web SauceDemo mengg
 1. Clone repository:
    ```bash
    git clone https://github.com/salwaaulia17/pw-saucedemo-6304240037.git
+## Menjalankan Pengujian
+
+Install dependencies:
+
+npm install
+
+Install Playwright browsers:
+
+npx playwright install
+
+Jalankan semua pengujian:
+
+npx playwright test
+
+Melihat HTML Report:
+
+npx playwright show-report
